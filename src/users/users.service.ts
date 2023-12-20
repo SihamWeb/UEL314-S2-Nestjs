@@ -5,30 +5,42 @@ import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const user = await User.create(createUserDto as Omit<User, 'id'>);
+    return user;
   }
 
   async findAll(){
     const users = await User.findAll();
+    if (users.length === 0) {
+      throw new Error('Aucun user trouvé');
+    }
     return users;
   }
 
   async findOne(id: number) {
     const user = await User.findByPk(id);
-
     if (!user) {
-      throw new NotFoundException(`User with ID #${id} not found`);
+      throw new NotFoundException(`L'user avec Id #${id} non trouvé`);
     }
-
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await User.findByPk(id);
+    if (!user) {
+      throw new NotFoundException(`Utilisateur avec Id ${id} non trouvé`);
+    }
+    await user.update(updateUserDto);
+    return user;
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  
+  async remove(id: number): Promise<void> {
+    const result = await User.destroy({ where: { id } });
+    if (result === 0) {
+      throw new NotFoundException(`Utilisateur avec Id ${id} non trouvé`);
+    }
+    return `Suppression de l'utilisateur avec Id ${id} réussie`;
   }
 }
