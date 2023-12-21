@@ -75,6 +75,7 @@ describe('UsersController', () => {
 
       expect(result).toEqual(createdUser);
     });
+    
     it('should handle errors and throw NotFoundException', async () => {
       const userDto: CreateUserDto = { firstname: 'John', lastname: 'Doe' };
 
@@ -82,6 +83,7 @@ describe('UsersController', () => {
       await expect(controller.create(userDto)).rejects.toThrowError(NotFoundException);
     });
   });
+  
   describe('update', () => {
     it('should update a user to the database', async () => {
       const id = '1'; 
@@ -95,6 +97,7 @@ describe('UsersController', () => {
       expect(usersService.update).toHaveBeenCalledWith(+id, userDto);
       expect(result).toBe(updatedUser);
     });
+    
     it('should handle errors and throw NotFoundException', async () => {
       const id = '1';
       const userDto: UpdateUserDto = { firstname: 'John', lastname: 'Doe' };
