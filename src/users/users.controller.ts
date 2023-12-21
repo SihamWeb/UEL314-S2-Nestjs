@@ -49,12 +49,12 @@ export class UsersController {
     }
 
   @Delete(':id')
-async remove(@Param('id') id: string): Promise<string> {
-  try {
-    const result = await this.usersService.remove(+id);
-    return result.toString();
-  } catch (error) {
-    throw new NotFoundException('Il y a des erreurs dans la suppression d utilisateur');
+    async remove(@Param('id') id: string): Promise<string> {
+      try {
+        const result = await this.usersService.remove(+id);
+        return result.toString();
+      } catch (error) {
+        throw new NotFoundException('Il y a des erreurs dans la suppression d utilisateur');
+    }
   }
-}
 }
