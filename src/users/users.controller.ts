@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -9,27 +9,53 @@ export class UsersController {
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    const createdUser = await this.usersService.create(createUserDto);
-    return createdUser;
+    try {
+      const createdUser = await this.usersService.create(createUserDto);
+      return createdUser;
+    }
+    catch (error) {
+      throw new NotFoundException('Il y a des erreurs dans la creation d utilisateur');
+    } 
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll() {
+    try {
+      const users = await this.usersService.findAll();
+      return users;
+    } catch (error) {
+      throw new NotFoundException('Il y a des erreurs dans la récupération de tous les utilisateurs');
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
-  }
+  async findOne(@Param('id') id: string) {
+    try {
+      const user = await this.usersService.findOne(+id);
+      return user;
+    } catch (error) {
+        throw new NotFoundException('Il y a des erreurs lors de la récupération d un utilisateur par id');
+    }
+  }  
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
+    async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+      try {      
+        return this.usersService.update(+id, updateUserDto);
+      }
+      catch (error) {
+        throw new NotFoundException('Il y a des erreurs dans la modification d un utilisateur');
+      }
+    }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+async remove(@Param('id') id: string): Promise<string> {
+  try {
+    // Supposons que this.usersService.remove renvoie une chaîne
+    const result = await this.usersService.remove(+id);
+    return result.toString(); // Assurez-vous que result est converti en chaîne si nécessaire
+  } catch (error) {
+    throw new NotFoundException('Il y a des erreurs dans la suppression d utilisateur');
   }
+}
 }
