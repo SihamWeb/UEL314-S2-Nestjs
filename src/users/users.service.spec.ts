@@ -60,18 +60,19 @@ describe('UsersService', () => {
       const createUserDto: CreateUserDto = {
         firstname: 'John',
         lastname: 'Doe',
-    };
+      };
 
-    (User.create as jest.Mock).mockResolvedValue({id: 1, ...createUserDto,} as User);
+      (User.create as jest.Mock).mockResolvedValue({id: 1, ...createUserDto,} as User);
 
-    const createdUser: User = await service.create(createUserDto);
+      const createdUser: User = await service.create(createUserDto);
 
-    expect(createdUser).toBeDefined();
-    expect(createdUser.firstname).toEqual(createUserDto.firstname);
-    expect(createdUser.lastname).toEqual(createUserDto.lastname);
+      expect(createdUser).toBeDefined();
+      expect(createdUser.firstname).toEqual(createUserDto.firstname);
+      expect(createdUser.lastname).toEqual(createUserDto.lastname);
 
-    expect(User.create).toHaveBeenCalledWith(createUserDto);
-  });
+      expect(User.create).toHaveBeenCalledWith(createUserDto);
+    });
+    
     it('should throw BadRequestException for missing firstname and lastname', async () => {
 
       await expect(service.create({} as CreateUserDto)).rejects.toThrow(BadRequestException);
@@ -141,10 +142,5 @@ describe('UsersService', () => {
       await expect(service.remove(id)).rejects.toThrowError(NotFoundException);
       expect(User.destroy).toHaveBeenCalledWith({ where: { id } });
     });
-});
-
-    
-    
-
-
+  });
 });
